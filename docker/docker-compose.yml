@@ -1,0 +1,15 @@
+version: '3.2'
+services:
+  wwwpy-gong-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+#    network_mode: host
+    container_name: wwwpy-gong-container
+    volumes:
+      - ..:/repo
+    working_dir: /repo
+    command: /bin/bash -c "./docker/entrypoint.sh"
+    ports:
+      - "8100:8000"
