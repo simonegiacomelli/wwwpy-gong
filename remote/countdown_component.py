@@ -19,7 +19,6 @@ class CountdownComponent(wpc.Component, tag_name='u-countdown'):
         self.start_time = None
         self.task = None
         self.element.innerHTML = """
-            <div>v1.0.7</div>
             <button data-name="_btn_start">Start</button>&nbsp;
             <button data-name="_btn_stop">Stop</button>
             <div style="height: 8px; border: none; margin: none;"></div>
@@ -28,7 +27,8 @@ class CountdownComponent(wpc.Component, tag_name='u-countdown'):
             <div data-name="_countdown">#</div>
         """
         self.cycle_time = 60
-        self._reset_ui()
+        self.on_completion = lambda: None
+        self.sound_on_start = False
 
     @property
     def cycle_time(self) -> int:
@@ -36,6 +36,7 @@ class CountdownComponent(wpc.Component, tag_name='u-countdown'):
 
     @cycle_time.setter
     def cycle_time(self, value):
+        logger.debug(f'setting cycle_time to {value}')
         self._cycle_time = value
         self.stop()
 
@@ -50,32 +51,39 @@ class CountdownComponent(wpc.Component, tag_name='u-countdown'):
         self._countdown.innerHTML = f"Cycle end:<br>{self._format_time(countdown)}"
         self._total_time.innerHTML = f"Total time:<br>{self._format_time(total_time)}"
 
-    async def _play_sound(self):
+    def _cycle_complete(self):
+        self.stop()
+        self.on_completion()
         js.Audio.new("https://fs.simone.pro/shared/gong/singing-bowl-gong-69238.mp3").play()
 
     async def _timer_tick(self):
+        start = True
         while self.start_time:
             elapsed = int(time.time() - self.start_time)
             cycle_used = elapsed % self.cycle_time
             if cycle_used == 0:
-                await self._play_sound()
-            self._update_ui(self.cycle_time - cycle_used, elapsed)
+                if start:
+                    start = False
+                else:
+                    await self._cycle_complete()
+                    return
+            left = self.cycle_time - cycle_used
+            self._update_ui(left, elapsed)
             await asyncio.sleep(1)
 
     async def _btn_start__click(self, event):
         logger.debug(f'{inspect.currentframe().f_code.co_name} event fired %s', event)
-        await self.start()
+        self.start()
 
-    async def start(self):
+    def start(self):
         if not self.start_time:
             self.start_time = time.time()
             self.task = asyncio.create_task(self._timer_tick())
 
     async def _btn_stop__click(self, event):
-        logger.debug(f'{inspect.currentframe().f_code.co_name} event fired %s', event)
-        await self.stop()
+        self.stop()
 
-    async def stop(self):
+    def stop(self):
         if self.task:
             self.task.cancel()
         self.start_time = None

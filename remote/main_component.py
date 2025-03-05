@@ -14,10 +14,15 @@ class MainComponent(wpc.Component, tag_name='component-1'):
 
     def init_component(self):
         # language=html
-        self.element.innerHTML = """<div style="display: flex; gap: 10px">
+        self.element.innerHTML = """
+v1.0.7        
+<div style="display: flex; gap: 10px">
     <u-countdown data-name='_c1'></u-countdown>
     <u-countdown data-name='_c2'></u-countdown>
 </div>
 """
-        self._c1.cycle_time = 20*60
+
+        self._c1.cycle_time = 20 * 60
         self._c2.cycle_time = 20
+        self._c1.on_completion = lambda: self._c2.start()
+        self._c2.on_completion = lambda: self._c1.start()
