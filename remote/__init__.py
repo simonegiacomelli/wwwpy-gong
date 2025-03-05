@@ -12,6 +12,7 @@ async def main():
 
 # language=html
 _style = """
+<link rel="icon" href="data:,">
 <meta name="viewport" content="width=device-width, initial-scale=3.0">
 <style>
     body {
