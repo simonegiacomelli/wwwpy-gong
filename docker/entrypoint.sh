@@ -12,4 +12,4 @@ env | tee -a reboot.log
 python -m pip install --upgrade pip  | tee -a reboot.log
 python -m pip install --upgrade wwwpy | tee -a reboot.log
 python -m pip install -r requirements.txt --upgrade  | tee -a reboot.log
-wwwpy 2>&1 | tee -a reboot.log
+wwwpy dev 2>&1 | tee -a reboot.log
