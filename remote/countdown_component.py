@@ -54,7 +54,7 @@ class CountdownComponent(wpc.Component, tag_name='u-countdown'):
     def _cycle_complete(self):
         self.stop()
         self.on_completion()
-        js.Audio.new("https://fs.simone.pro/shared/gong/singing-bowl-gong-69238.mp3").play()
+        js.Audio.new("https://fs.simone.pro/shared/gong/gong-short.ogg").play()
 
     async def _timer_tick(self):
         start = True
