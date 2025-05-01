@@ -79,6 +79,7 @@ class CountdownComponent(wpc.Component, tag_name='u-countdown'):
         self.start()
 
     def start(self):
+        self.stop()
         if not self.start_time:
             self.start_time = time.time()
             self.task = asyncio.create_task(self._timer_tick())
