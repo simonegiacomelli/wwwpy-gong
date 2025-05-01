@@ -19,16 +19,18 @@ class CountdownComponent(wpc.Component, tag_name='u-countdown'):
         self.start_time = None
         self.task = None
         self.element.innerHTML = """
-            <button data-name="_btn_start">Start</button>&nbsp;
+            <button data-name="_btn_start">Start</button>
             <button data-name="_btn_stop">Stop</button>
             <div style="height: 8px; border: none; margin: none;"></div>
-            <div data-name="_total_time">#</div>
-            <br>
+            <div data-name="_total_time" style="margin-bottom:5px">#</div>
             <div data-name="_countdown">#</div>
         """
         self.cycle_time = 60
         self.on_completion = lambda: None
         self.sound_on_start = False
+
+    def disconnectedCallback(self):
+        self.stop()
 
     @property
     def cycle_time(self) -> int:
@@ -69,6 +71,7 @@ class CountdownComponent(wpc.Component, tag_name='u-countdown'):
                     return
             left = self.cycle_time - cycle_used
             self._update_ui(left, elapsed)
+            self._set_active(True)
             await asyncio.sleep(1)
 
     async def _btn_start__click(self, event):
@@ -87,7 +90,15 @@ class CountdownComponent(wpc.Component, tag_name='u-countdown'):
         if self.task:
             self.task.cancel()
         self.start_time = None
-        self._reset_ui()
-
-    def _reset_ui(self):
         self._update_ui(self.cycle_time, 0)
+        self._set_active(False)
+
+    def _set_active(self, active: bool):
+        # change the background color of self.element to something distinct if it's active or delete the bk color if not
+        style = self.element.style
+        if active:
+            style.backgroundColor = "darkblue"
+        else:
+            style.removeProperty('background-color')
+
+
