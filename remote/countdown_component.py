@@ -59,20 +59,23 @@ class CountdownComponent(wpc.Component, tag_name='u-countdown'):
         js.Audio.new("https://fs.simone.pro/shared/gong/gong-short.ogg").play()
 
     async def _timer_tick(self):
-        start = True
-        while self.start_time:
-            elapsed = int(time.time() - self.start_time)
-            cycle_used = elapsed % self.cycle_time
-            if cycle_used == 0:
-                if start:
-                    start = False
-                else:
-                    await self._cycle_complete()
-                    return
-            left = self.cycle_time - cycle_used
-            self._update_ui(left, elapsed)
-            self._set_active(True)
-            await asyncio.sleep(1)
+        try:
+            start = True
+            while self.start_time:
+                elapsed = int(time.time() - self.start_time)
+                cycle_used = elapsed % self.cycle_time
+                if cycle_used == 0:
+                    if start:
+                        start = False
+                    else:
+                        self._cycle_complete()
+                        return
+                left = self.cycle_time - cycle_used
+                self._update_ui(left, elapsed)
+                self._set_active(True)
+                await asyncio.sleep(1)
+        except asyncio.CancelledError:
+            logger.info('CountdownComponent timer task cancelled')
 
     async def _btn_start__click(self, event):
         logger.debug(f'{inspect.currentframe().f_code.co_name} event fired %s', event)
