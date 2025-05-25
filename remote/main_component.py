@@ -17,7 +17,7 @@ class MainComponent(wpc.Component, tag_name='component-1'):
     def init_component(self):
         # language=html
         self.element.innerHTML = """
-v1.0.9         
+v2.0.1         
 <button data-name="_btn_stop">Stop</button>
 <div style="display: flex; gap: 10px; margin-top : 5px;">
     <u-countdown data-name='_c1'></u-countdown>
@@ -34,7 +34,10 @@ v1.0.9
         self._c3.on_completion = lambda: self._c1.start()
         js.document.body.style.marginTop = "3px"
         js.document.body.style.marginLeft = "3px"
-    
+
+    async def after_init_component(self):
+        self._c1.start()
+
     async def _btn_stop__click(self, event):
         for c in [self._c1, self._c2, self._c3]:
             c.stop()
