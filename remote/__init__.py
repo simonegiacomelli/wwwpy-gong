@@ -2,8 +2,6 @@ from js import document
 
 
 async def main():
-    # from wwwpy.remote import shoelace
-    # shoelace.setup_shoelace()
     document.head.insertAdjacentHTML('beforeend', _style)
     from . import main_component  # for component registration
     document.body.innerHTML = '<component-1></component-1>'
