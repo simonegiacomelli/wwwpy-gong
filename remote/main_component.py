@@ -35,8 +35,12 @@ v2.0.1
         js.document.body.style.marginTop = "3px"
         js.document.body.style.marginLeft = "3px"
 
-    async def after_init_component(self):
-        self._c1.start()
+    # when the app starts it doesn't have the rights to play sounds, so the
+    # timer starts but then it doesn't play the sound. It's bad because you
+    # see the timer going but in the end you don't have the audio cue and miss
+    # the end of the cycle.
+    # async def after_init_component(self):
+    #     self._c1.start()
 
     async def _btn_stop__click(self, event):
         for c in [self._c1, self._c2, self._c3]:
