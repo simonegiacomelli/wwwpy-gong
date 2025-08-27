@@ -1,3 +1,4 @@
+name: wwwpy_gong
 services:
   wwwpy-gong-service:
     build:
