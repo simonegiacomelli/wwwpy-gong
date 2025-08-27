@@ -1,4 +1,4 @@
-version: '3.2'
+name: wwwpy_gong
 services:
   wwwpy-gong-service:
     build:
